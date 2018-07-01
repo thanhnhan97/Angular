@@ -12,59 +12,109 @@ import { map, switchMap, mergeMap } from "rxjs/operators";
 })
 export class ProductcategoriesComponent implements OnInit {
 
-  categoryForm : FormGroup;
-  listCategory$ : Observable<Productcategory[]> = of([]);
+  categoryForm: FormGroup;
+  listCategory$: Observable<Productcategory[]> = of([]);
   message: string = null;
   constructor(
-    private baseService : BaseService,
-    private formBuilder : FormBuilder
+    private baseService: BaseService,
+    private formBuilder: FormBuilder
   ) {
     this.createCategoryForm();
   }
 
   ngOnInit() {
+    this.loadProductCategories();
+    console.log(this.listCategory$);
+    
   }
 
-  createCategoryForm()
+  loadProductCategories()
   {
+    this.baseService.getAll('/productcategories').subscribe(
+        data => {
+          this.listCategory$ = of(data as Productcategory[]);
+          console.log(this.listCategory$);
+          
+        }
+      );
+  }
+
+  createCategoryForm() {
     this.categoryForm = this.formBuilder.group(
       {
-        productCategoryID : [''],
-        productCategoryName : ['',[Validators.required]]
+        productCategoryID: [''],
+        productCategoryName: ['', [Validators.required]]
       }
     );
   }
 
-  addItem()
-  {
-    this.listCategory$.forEach(
-      data => {
-        data.push(this.categoryForm.value);
-      }
-    );
-    this.message = 'Add success';
+  addItem() {
+    this.baseService.add('/productcategories', this.categoryForm.value).subscribe(
+        data => {
+          if (data) {
+            this.listCategory$.forEach(
+              x => {
+                x.push(data as Productcategory);
+              }
+            );
+
+            this.message = 'Add success';
+            setTimeout(
+              () => {
+                this.message = null;
+              }, 2000
+            );
+          }
+          else {
+
+            this.message = 'Add Fail';
+            setTimeout(
+              () => {
+                this.message = null;
+              }, 2000
+            );
+          }
+        }
+      );
+  }
+
+  showMessageBox(message: string)
+  { 
+    this.message = message;
     setTimeout(
       () => {
         this.message = null;
-      },2000
-    );
-    
-    this.categoryForm.reset();
-  }
-
-  deleteItem(index: any)
-  {
-    this.listCategory$.forEach(
-      data => {
-        data.splice(index, 1);
-      }
+      }, 3000
     );
   }
 
-  updateItem()
-  {
+  deleteItem(item: Productcategory, index: any) {
+    this.baseService.delete(`/productcategories/${item.productCategoryID}`).pipe(
+      map(
+        data => {
+          if(data)
+          {
+            this.listCategory$.forEach(
+              data => {
+                data.splice(index, 1);
+              }
+            );
+            this.showMessageBox('Delete Success');
+          }
+          else
+          {
+            this.showMessageBox('Delete Fail');
+          }
+        }
+      )
+    ); 
     
+  }
+
+  updateItem() {
+
     let key = this.categoryForm.controls['productCategoryID'].value;
+
     this.listCategory$.forEach(
       data => {
         let index = data.findIndex(x => x.productCategoryID === key);
@@ -74,11 +124,10 @@ export class ProductcategoriesComponent implements OnInit {
     );
   }
 
-  pathValueItem(value: any)
-  {
+  pathValueItem(value: any) {
     this.categoryForm.patchValue(
       {
-        productCategoryID : value.productCategoryID,
+        productCategoryID: value.productCategoryID,
         productCategoryName: value.productCategoryName
       }
     );

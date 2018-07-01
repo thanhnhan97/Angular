@@ -37,11 +37,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let item of listCategory$ | async; let i=index">
+                    <tr *ngFor="let item of listCategory$ |async; let i=index">
                         <td>{{ i + 1 }}</td>
-                        <td>{{ item.productCategoryID }}</td>
-                        <td>{{ item.productCategoryName }}</td>
-                        <td><button type="button" class="btn btn-danger" >Delete</button></td>
+                        <td>{{ item?.productCategoryID}}</td>
+                        <td>{{ item?.productCategoryName}}</td>
+                        <td><button type="button" class="btn btn-danger" (click)="deleteItem(item,i)">Delete</button></td>
                         <td><button type="button" class="btn btn-primary" data-toggle="modal" href='#modal-id' (click)="pathValueItem(item)">Update</button></td>
                     </tr>
                 </tbody>

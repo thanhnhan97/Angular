@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Product } from '../../shared/models/product';
 import { Productcategory } from '../../shared/models/productcategory';
+import { BaseService } from '../../shared/base.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-products',
@@ -13,15 +15,39 @@ export class ProductsComponent implements OnInit {
 
   listProduct$: Observable<Product[]> = of([]);
   productForm: FormGroup;
+  //of(): ép về kiểu observable 
   category$: Observable<Productcategory[]> = of([]);
   message: string = null;
   constructor(
-    private builder: FormBuilder
+    private builder: FormBuilder,
+    private service : BaseService
   ) {
     this.createProductForm();
   }
 
   ngOnInit() {
+    this.loadProduct();
+    this.loadProductCategory();
+  }
+
+  loadProduct()
+  {
+    this.service.getAll('/product').subscribe(
+        data => {
+          this.listProduct$ = of(data as Product[]);  
+        }
+    );
+  }
+
+  loadProductCategory()
+  {
+    this.service.getAll('/productcategories').subscribe(
+
+        data => {
+          this.category$ = of(data as Productcategory[]);
+        }
+      )
+
   }
 
   createProductForm() {
@@ -30,27 +56,49 @@ export class ProductsComponent implements OnInit {
       ProductCategoryID: [],
       ProductName: ['', [Validators.required]],
       ProductPrice: ['1'],
-      ProductLocation: [],
+      ProductLocation: ['',[Validators.required]],
       ProductImage: []
     });
   }
 
   addItem() {
-    this.listProduct$.forEach(
-      data => {
-        data.push(this.productForm.value);
-      }
+    this.service.add('/product', this.productForm.value).subscribe(
+        data => {
+          if(data)
+          {
+            this.listProduct$.forEach(
+              x => {
+                x.push(data as Product);
+              }
+            );
+            this.showMessageBox('Add Item Success');
+          }
+          else{
+            this.showMessageBox('Add Item Fail');
+          }
+        }
     );
-    this.showMessageBox('Add Item Success');
+    
   }
 
-  deleteItem(index: number) {
-    this.listProduct$.forEach(
-      data => {
-        data.splice(index,1);
-      }
+  deleteItem(item: Product, index: number) {
+    this.service.delete(`/product/${item.ProductID}`).subscribe(
+        data => {
+          if(data)
+          {
+            this.listProduct$.forEach(
+              data => {
+                data.splice(index,1);
+              }
+            );
+            this.showMessageBox('Delete Item Success');
+          }
+          else{
+            this.showMessageBox('Delete Item Fail');
+          }
+        }
     );
-    this.showMessageBox('Delete Item Success');
+    
   }
 
   updateItem() {

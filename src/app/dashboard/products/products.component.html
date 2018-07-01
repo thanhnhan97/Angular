@@ -25,7 +25,7 @@
             </div>
 
             <div class="form-group">
-              <label for="">Location</label>
+              <label for="">Location <sup style="color: red">*</sup></label>
               <input type="text" class="form-control" formControlName="ProductLocation">
             </div>
           </div>
@@ -84,10 +84,10 @@
         <td>{{ item?.ProductLocation }}</td>
         <td>{{ item?.ProductCategoryID }}</td>
         <td>
-          <img src="{{ item?.ProductImage }}" class="img-responsive" width="200px" height="200px" alt="Image">
+          <img src="{{ item?.ProductImage }}" class="img-responsive" width="50px" height="50px" alt="Image">
         </td>
         <td>
-          <button class="btn btn-danger" (click)="deleteItem(i)">Delete</button>
+          <button class="btn btn-danger" (click)="deleteItem(item,i)">Delete</button>
         </td>
         <td>
           <button class="btn btn-primary" (click)="pathValueItem(item)" data-toggle="modal" href='#modal-id'>Update</button>
@@ -139,7 +139,7 @@
                     </div>
         
                     <div class="form-group" *ngIf="productForm.controls['ProductImage'].value">
-                      <img src="{{ productForm.controls['ProductImage'].value }}" width="250px" height="250px" class="img-responsive">
+                      <img src="{{ productForm.controls['ProductImage'].value }}" width="100px" height="100px" class="img-responsive">
                     </div>
                   </div>
                 </div>
