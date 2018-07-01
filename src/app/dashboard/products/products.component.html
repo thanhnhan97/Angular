@@ -3,33 +3,153 @@
     <h3 class="panel-title">Panel title</h3>
   </div>
   <div class="panel-body">
-    <form>
-      <legend>Form title</legend>
-      <div class="form-group">
-        <label for="">Product Category</label>
-        <input type="text" class="form-control">
+    <div class="form-group">
+      <div class="alert alert-success" *ngIf="message">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>Message!</strong> {{ message }}
       </div>
-      <div class="form-group">
-        <label for="">Name</label>
-        <input type="text" class="form-control">
+    </div>
+    <form [formGroup]="productForm">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div class="form-group">
+              <label for="">Name <sup style="color:red">*</sup></label>
+              <input type="text" class="form-control" formControlName="ProductName">
+            </div>
+            <div class="form-group">
+              <label for="">Price</label>
+              <input type="number" class="form-control" formControlName="ProductPrice">
+              <h6 style="color: red" *ngIf="productForm.controls['ProductPrice'].value < 1"> Price don't
+                < 0 </h6>
+            </div>
+
+            <div class="form-group">
+              <label for="">Location</label>
+              <input type="text" class="form-control" formControlName="ProductLocation">
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div class="form-group">
+              <label> Category </label>
+              <select class="form-control" (change)="selectChagneItem($event.target.value)">
+                <option value="{{ item?.productCategoryID }}" *ngFor="let item of category$ | async"> {{ item?.productCategoryName }} </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="">Chose file</label>
+              <input type="file" class="form-control" (change)="uploadFile($event.target.files)">
+            </div>
+
+            <div class="form-group" *ngIf="productForm.controls['ProductImage'].value">
+              <img src="{{ productForm.controls['ProductImage'].value }}" width="250px" height="250px" class="img-responsive">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <button type="button" class="btn btn-primary" [disabled]="!productForm.valid || productForm.controls['ProductPrice'].value <= 0"
+            (click)="addItem()">Add Item</button>
+
+        </div>
       </div>
-      <div class="form-group">
-        <label for="">Price</label>
-        <input type="text" class="form-control">
-      </div>
-      <div class="form-group">
-        <label for="">Location</label>
-        <input type="text" class="form-control">
-      </div>
-      <div class="form-group">
-        <label for="">Image</label>
-        <input type="text" class="form-control">
-      </div>
-      <div class="form-group">
-        <label for="">Decription</label>
-        <input type="text" class="form-control">
-      </div>
-      <button type="button" class="btn btn-primary">Submit</button>
     </form>
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">PRODUCT</div>
+  <!-- Table -->
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Location</th>
+        <th>Category</th>
+        <th>Image</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listProduct$ | async; let i=index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ item?.ProductID }}</td>
+        <td>{{ item?.ProductName }}</td>
+        <td>{{ item?.ProductPrice }}</td>
+        <td>{{ item?.ProductLocation }}</td>
+        <td>{{ item?.ProductCategoryID }}</td>
+        <td>
+          <img src="{{ item?.ProductImage }}" class="img-responsive" width="200px" height="200px" alt="Image">
+        </td>
+        <td>
+          <button class="btn btn-danger" (click)="deleteItem(i)">Delete</button>
+        </td>
+        <td>
+          <button class="btn btn-primary" (click)="pathValueItem(item)" data-toggle="modal" href='#modal-id'>Update</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="modal fade" id="modal-id">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+          <form [formGroup]="productForm">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label for="">Name <sup style="color:red">*</sup></label>
+                      <input type="text" class="form-control" formControlName="ProductName">
+                    </div>
+                    <div class="form-group">
+                      <label for="">Price</label>
+                      <input type="number" class="form-control" formControlName="ProductPrice">
+                      <h6 style="color: red" *ngIf="productForm.controls['ProductPrice'].value < 1"> Price don't
+                        < 0 </h6>
+                    </div>
+        
+                    <div class="form-group">
+                      <label for="">Location</label>
+                      <input type="text" class="form-control" formControlName="ProductLocation">
+                    </div>
+                  </div>
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label> Category </label>
+                      <select class="form-control" (change)="selectChagneItem($event.target.value)">
+                        <option value="{{ item?.productCategoryID }}" *ngFor="let item of category$ | async"> {{ item?.productCategoryName }} </option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="">Chose file</label>
+                      <input type="file" class="form-control" (change)="uploadFile($event.target.files)">
+                    </div>
+        
+                    <div class="form-group" *ngIf="productForm.controls['ProductImage'].value">
+                      <img src="{{ productForm.controls['ProductImage'].value }}" width="250px" height="250px" class="img-responsive">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="productForm.reset()">Close</button>
+        <button type="button" class="btn btn-primary" (click)="updateItem()" data-dismiss="modal">Save changes</button>
+      </div>
+    </div>
   </div>
 </div>
