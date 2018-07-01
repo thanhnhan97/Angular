@@ -11,6 +11,10 @@ import { OrderComponent } from './dashboard/order/order.component';
 import { OrderdetailComponent } from './dashboard/orderdetail/orderdetail.component';
 import { RouterModule } from '@angular/router';
 import { routes } from './shared/app-routes.routing';
+import { MenuComponent } from './home/menu/menu.component';
+import { ListproductComponent } from './home/listproduct/listproduct.component';
+import { DetailproductComponent } from './home/detailproduct/detailproduct.component';
+import { CartComponent } from './home/cart/cart.component';
 
 @NgModule({ 
   declarations: [
@@ -21,6 +25,10 @@ import { routes } from './shared/app-routes.routing';
     MangementComponent,
     OrderComponent,
     OrderdetailComponent,
+    MenuComponent,
+    ListproductComponent,
+    DetailproductComponent,
+    CartComponent,
     
   ],
   imports: [
