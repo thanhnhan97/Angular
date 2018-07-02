@@ -1,4 +1,7 @@
+import { Product } from './../../shared/models/product';
 import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { BaseService } from '../../shared/base.service';
 
 @Component({
   selector: 'app-listproduct',
@@ -7,9 +10,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListproductComponent implements OnInit {
 
-  constructor() { }
+  listProduct$: Observable<Product[]>;
+
+  constructor(
+    private service: BaseService
+  ) { }
 
   ngOnInit() {
+    this.service.getAll('/product').subscribe(
+      data =>  this.listProduct$ =  of(data as Product[])
+    );
   }
+
 
 }

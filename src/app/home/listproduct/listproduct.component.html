@@ -1,41 +1,46 @@
-<div class="col-md-3 col-sm-4">
-					
-  <div class="single-product">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 col-sm-4" *ngFor="let item of listProduct$ | async">
 
-    <div class="product-block">
+      <div class="single-product">
 
-      <img src="https://c.static-nike.com/a/images/t_PDP_1280_v1/f_auto/eh4zetemvs0nfjlx7oc8/ck-racer-mens-shoe-n82d4X.jpg" alt="" class="thumbnail">
+        <div class="product-block">
 
-      <div class="product-description text-center">
+          <img src="{{ item?.Image }}" alt=""
+            class="thumbnail">
 
-        <p class="title">Daniel Wellington</p>
+          <div class="product-description text-center">
 
-        <p class="price">55.00</p>
+            <p class="title">{{ item.Name }}</p>
 
-      </div>
+            <p class="price">55.00</p>
 
-      <div class="product-hover">
+          </div>
 
-        <ul>
+          <div class="product-hover">
 
-          <li>
-            <a href="single-product.html">
-              <i class="fa fa-cart-arrow-down"></i>
-            </a>
-          </li>
+            <ul>
 
-          <li>
-            <a href="">
-              <i class="fas fa-arrows-alt-h"></i>
-            </a>
-          </li>
+              <li>
+                <a href="single-product.html">
+                  <i class="fa fa-cart-arrow-down"></i>
+                </a>
+              </li>
 
-        </ul>
+              <li>
+                <a href="">
+                  <i class="fas fa-arrows-alt-h"></i>
+                </a>
+              </li>
+
+            </ul>
+
+          </div>
+
+        </div>
 
       </div>
 
     </div>
-
   </div>
-
 </div>

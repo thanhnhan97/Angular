@@ -2,8 +2,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { BaseService } from '../../shared/base.service';
 import { Observable, of } from 'rxjs';
-import { Productcategory } from '../../shared/models/productcategory';
 import { map, switchMap, mergeMap } from "rxjs/operators";
+import { ProductType } from '../../shared/models/producttype';
 
 @Component({
   selector: 'app-productcategories',
@@ -12,74 +12,61 @@ import { map, switchMap, mergeMap } from "rxjs/operators";
 })
 export class ProductcategoriesComponent implements OnInit {
 
-  categoryForm: FormGroup;
-  listCategory$: Observable<Productcategory[]> = of([]);
+  productTypeForm: FormGroup;
+  listProductType$: Observable<ProductType[]>;
   message: string = null;
   constructor(
     private baseService: BaseService,
     private formBuilder: FormBuilder
   ) {
-    this.createCategoryForm();
+    this.createProductTypeForm();
   }
 
   ngOnInit() {
-    this.loadProductCategories();
-    console.log(this.listCategory$);
-    
+    this.loadProductType();
+    console.log(this.listProductType$);
+
   }
 
-  loadProductCategories()
-  {
-    this.baseService.getAll('/productcategories').subscribe(
-        data => {
-          this.listCategory$ = of(data as Productcategory[]);
-          console.log(this.listCategory$);
-          
-        }
-      );
+  loadProductType() {
+    this.baseService.getAll('/producttype').subscribe(
+      data => {
+        this.listProductType$ = of(data as ProductType[]);
+        console.log(this.listProductType$);
+
+      }
+    );
   }
 
-  createCategoryForm() {
-    this.categoryForm = this.formBuilder.group(
+  createProductTypeForm() {
+    this.productTypeForm = this.formBuilder.group(
       {
-        productCategoryID: [''],
-        productCategoryName: ['', [Validators.required]]
+        ProductTypeID: [''],
+        Name: ['', [Validators.required]]
       }
     );
   }
 
   addItem() {
-    this.baseService.add('/productcategories', this.categoryForm.value).subscribe(
-        data => {
-          if (data) {
-            this.listCategory$.forEach(
-              x => {
-                x.push(data as Productcategory);
-              }
-            );
-
-            this.message = 'Add success';
-            setTimeout(
-              () => {
-                this.message = null;
-              }, 2000
-            );
-          }
-          else {
-
-            this.message = 'Add Fail';
-            setTimeout(
-              () => {
-                this.message = null;
-              }, 2000
-            );
-          }
+    this.baseService.add('/producttype', this.productTypeForm.value).subscribe(
+      data => {
+        if (data) {
+          this.listProductType$.forEach(
+            x => {
+              x.push(data as ProductType);
+            }
+          );
+          this.showMessageBox('Add Success');
         }
-      );
+        else {
+          this.showMessageBox('Add Fail');
+
+        }
+      }
+    );
   }
 
-  showMessageBox(message: string)
-  { 
+  showMessageBox(message: string) {
     this.message = message;
     setTimeout(
       () => {
@@ -88,47 +75,52 @@ export class ProductcategoriesComponent implements OnInit {
     );
   }
 
-  deleteItem(item: Productcategory, index: any) {
-    this.baseService.delete(`/productcategories/${item.productCategoryID}`).pipe(
-      map(
-        data => {
-          if(data)
-          {
-            this.listCategory$.forEach(
-              data => {
-                data.splice(index, 1);
-              }
-            );
-            this.showMessageBox('Delete Success');
-          }
-          else
-          {
-            this.showMessageBox('Delete Fail');
-          }
-        }
-      )
-    ); 
-    
-  }
-
-  updateItem() {
-
-    let key = this.categoryForm.controls['productCategoryID'].value;
-
-    this.listCategory$.forEach(
+  deleteItem(item: ProductType, index: any) {
+    this.baseService.delete(`/producttype/${item.ProductTypeID}`).subscribe(
       data => {
-        let index = data.findIndex(x => x.productCategoryID === key);
-        data[index] = this.categoryForm.value;
-        this.categoryForm.reset();
+        if (data) {
+          this.listProductType$.forEach(
+            data => {
+              data.splice(index, 1);
+            }
+          );
+          this.showMessageBox('Delete Success');
+        }
+        else {
+          this.showMessageBox('Delete Fail');
+        }
       }
     );
   }
 
-  pathValueItem(value: any) {
-    this.categoryForm.patchValue(
+  updateItem() {
+
+    let key = this.productTypeForm.controls['ProductTypeID'].value;
+    this.baseService.update(`/producttype/${key}`, this.productTypeForm.value).subscribe(
+      data => {
+        debugger
+        if (data) {
+          this.listProductType$.forEach(
+            x => {
+              let index = x.findIndex(x => x.ProductTypeID === key);
+              x[index] = this.productTypeForm.value;
+              this.productTypeForm.reset();
+              this.showMessageBox('Update Success');
+            }
+          )
+        }
+        else {
+          this.showMessageBox('Update Fail');
+        }
+      }
+    );
+  }
+
+  pathValueItem(value: ProductType) {
+    this.productTypeForm.patchValue(
       {
-        productCategoryID: value.productCategoryID,
-        productCategoryName: value.productCategoryName
+        ProductTypeID: value.ProductTypeID,
+        Name: value.Name
       }
     );
   }

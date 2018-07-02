@@ -1,10 +1,10 @@
 import { Observable, of } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Product } from '../../shared/models/product';
-import { Productcategory } from '../../shared/models/productcategory';
 import { BaseService } from '../../shared/base.service';
 import { map } from 'rxjs/operators';
+import { Product } from '../../shared/models/product';
+import { ProductType } from '../../shared/models/producttype';
 
 @Component({
   selector: 'app-products',
@@ -15,8 +15,8 @@ export class ProductsComponent implements OnInit {
 
   listProduct$: Observable<Product[]> = of([]);
   productForm: FormGroup;
-  //of(): ép về kiểu observable 
-  category$: Observable<Productcategory[]> = of([]);
+  //of(): ép về kiểu observable   
+  listProductType$: Observable<ProductType[]> = of([]);
   message: string = null;
   constructor(
     private builder: FormBuilder,
@@ -27,7 +27,9 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
     this.loadProduct();
-    this.loadProductCategory();
+    this.loadProductType();
+    console.log(this.listProductType$);
+    
   }
 
   loadProduct()
@@ -39,25 +41,23 @@ export class ProductsComponent implements OnInit {
     );
   }
 
-  loadProductCategory()
+  loadProductType()
   {
-    this.service.getAll('/productcategories').subscribe(
-
-        data => {
-          this.category$ = of(data as Productcategory[]);
-        }
-      )
-
+    this.service.getAll('/producttype').subscribe(
+      data =>{
+        this.listProductType$ = of(data as ProductType[]);
+      }
+    );    
   }
 
   createProductForm() {
     this.productForm = this.builder.group({
       ProductID: [],
-      ProductCategoryID: [],
-      ProductName: ['', [Validators.required]],
-      ProductPrice: ['1'],
-      ProductLocation: ['',[Validators.required]],
-      ProductImage: []
+      ProductTypeID: [],
+      Name: ['', [Validators.required]],
+      Price: ['1'],
+      Description: ['',[Validators.required]],
+      Image: []
     });
   }
 
@@ -78,10 +78,12 @@ export class ProductsComponent implements OnInit {
           }
         }
     );
+    console.log(this.productForm.value);
     
   }
 
   deleteItem(item: Product, index: number) {
+    debugger
     this.service.delete(`/product/${item.ProductID}`).subscribe(
         data => {
           if(data)
@@ -113,11 +115,12 @@ export class ProductsComponent implements OnInit {
 
   pathValueItem(item: Product) {
     this.productForm.patchValue({
-      ProductCategoryID: item.ProductCategoryID,
-      ProductName: item.ProductName,
-      ProductPrice: item.ProductPrice,
-      ProductLocation: item.ProductLocation,
-      ProductID: item.ProductID
+      ProductID: item.ProductID,
+      ProductTypeID: item.ProductTypeID,
+      Name: item.Name,
+      Price: item.Price,
+      Description: item.Description,
+      Image: item.Image
     });
   }
 
@@ -126,15 +129,16 @@ export class ProductsComponent implements OnInit {
 
       let url = `assets/imgs/${$event.item(0).name}`;
       this.productForm.patchValue({
-        ProductImage: url
+        Image: url
       });
     }
 
   }
 
   selectChagneItem($event) {
+    debugger
     this.productForm.patchValue({
-      ProductCategoryID: $event
+      ProductTypeID: $event
     });
   }
 
