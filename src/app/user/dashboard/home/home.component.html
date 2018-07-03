@@ -1,0 +1,28 @@
+<app-user-navbar>
+</app-user-navbar>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="card" style="width: 18rem;" *ngFor="let item of listProduct$ | async">
+      <a routerLink="/detail/{{ item?.ProductID }}">
+        <img src="{{ item?.Image }}" class="card-img-top">
+      </a>
+      <div class="card-body">
+        <p>
+           <span>Price: </span> {{ item?.Price | currency }}
+        </p>
+        <p> <span>Quantity: </span> <input #quantity type="number"></p>
+        <h5 class="card-title"> {{ item?.Name }} </h5>
+        <p class="card-text">
+          {{ item?.Description }}
+        </p>
+        <div class="form-inline">
+            <button type="button" class="btn btn-primary" (click)="addCart(item,quantity.value)">Buy</button>
+            <button type="button" routerLink="/detail/{{ item?.ProductID }}" class="btn btn-info"> View Detail</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

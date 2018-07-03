@@ -1,15 +1,18 @@
-import { ListproductComponent } from './../home/listproduct/listproduct.component';
-import { ProductsComponent } from './../dashboard/products/products.component';
-import { Routes, RouterModule } from '@angular/router';
-import { ProductcategoriesComponent } from '../dashboard/productcategories/productcategories.component';
-import { ModuleWithComponentFactories, ModuleWithProviders } from '@angular/core';
+import { Routes } from '@angular/router';
+import { AdminModule } from '../dashboard/admin/admin.module';
+import { DashboardModule } from '../user/dashboard/dashboard.module';
 export const routes: Routes = [
-  { 
-    path: 'product',
-    component:  ProductsComponent
-   },
-   {
-     path: 'product-type',
-     component: ProductcategoriesComponent
-   }
+  {
+    path: 'admin',
+    loadChildren: () => AdminModule
+  },
+  // {
+  //   path: '',
+  //   redirectTo: 'user',
+  //   pathMatch: 'full'
+  // }
+  {
+    path: '',
+    loadChildren: () => DashboardModule
+  }
 ];

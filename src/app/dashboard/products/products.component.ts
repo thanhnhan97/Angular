@@ -17,7 +17,7 @@ export class ProductsComponent implements OnInit {
   productForm: FormGroup;
   //of(): ép về kiểu observable   
   listProductType$: Observable<ProductType[]> = of([]);
-  message: string = null;
+  message: Observable<string>;
   constructor(
     private builder: FormBuilder,
     private service : BaseService
@@ -78,8 +78,6 @@ export class ProductsComponent implements OnInit {
           }
         }
     );
-    console.log(this.productForm.value);
-    
   }
 
   deleteItem(item: Product, index: number) {
@@ -144,10 +142,10 @@ export class ProductsComponent implements OnInit {
 
   showMessageBox(message: string)
   {
-    this.message = message;
+    this.message = of(message);
     setTimeout(
       () => {
-        this.message = null;
+        this.message = of(null);
       }, 3000
     );
   }
