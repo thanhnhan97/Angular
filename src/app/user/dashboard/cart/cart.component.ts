@@ -13,15 +13,18 @@ export class CartComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.loadListCart()
   }
 
   loadListCart()
   {
+    debugger
     let list = localStorage.getItem('cart');
     if(list)
     {
       this.listCart$ = of(JSON.parse(list));
     }
+    
   }
 
   removeItem(index: number)

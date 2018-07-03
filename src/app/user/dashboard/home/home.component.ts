@@ -3,6 +3,7 @@ import { Product } from './../../../shared/models/product';
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { BaseService } from '../../../shared/base.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -14,12 +15,13 @@ export class HomeComponent implements OnInit {
   listProduct$: Observable<Product[]>;
   listCart$ : Observable<TempCart[]>;
   constructor(
-    private service: BaseService
+    private service: BaseService,
+    private router : Router
   ) { }
 
   ngOnInit() {
     //Load Product
-    this.listProduct$ = this.service.getAll('/prouduct') as Observable<Product[]>;
+    this.listProduct$ = this.service.getAll('/product') as Observable<Product[]>;
   }
 
   selectListCart()
@@ -35,7 +37,7 @@ export class HomeComponent implements OnInit {
 
   addCart(item: Product, quantity: number)
   {
-     let tempCart: TempCart;
+     let tempCart: TempCart = null;
     tempCart.productID =  item.ProductID;
     tempCart.Image =  item.Image;
     tempCart.Name =  item.Name;
@@ -47,7 +49,7 @@ export class HomeComponent implements OnInit {
     tempCart.Price = item.Price;
     
     let list = this.selectListCart();
-    if(list) //<-- check list item cart exist
+    if(list == undefined) //<-- check list item cart exist
     {
       //if exist
       list.forEach(
@@ -72,7 +74,9 @@ export class HomeComponent implements OnInit {
       //if don't exist list cart
       let list: TempCart[] = [];
       list.push(tempCart); 
-      localStorage.setItem('cart', list.toString());
+      let json = JSON.stringify(list);   
+      localStorage.setItem('cart', json);
+      this.router.navigate(['/cart']);
     }
   }
 

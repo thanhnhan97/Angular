@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseService } from '../../../shared/base.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLinkActive, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { Product } from '../../../shared/models/product';
@@ -18,16 +18,18 @@ export class DetailComponent implements OnInit {
   constructor(
     private service: BaseService,
     private route : ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private router : Router
   ) { }
 
   ngOnInit() {
+    this.getByItem();
   }
   
   getByItem()
   {
     let id = this.route.snapshot.paramMap.get('id');
-    this.product$ = this.service.getBy(`/product${id}`) as Observable<Product>;
+    this.product$ = this.service.getBy(`/product/${id}`) as Observable<Product>;
   }
 
   selectListCart()
@@ -43,7 +45,7 @@ export class DetailComponent implements OnInit {
 
   addCart(item: Product, quantity: number)
   {
-     let tempCart: TempCart;
+     let tempCart: any = {};
     tempCart.productID =  item.ProductID;
     tempCart.Image =  item.Image;
     tempCart.Name =  item.Name;
@@ -55,7 +57,7 @@ export class DetailComponent implements OnInit {
     tempCart.Price = item.Price;
     
     let list = this.selectListCart();
-    if(list) //<-- check list item cart exist
+    if(list == undefined) //<-- check list item cart exist
     {
       //if exist
       list.forEach(
@@ -79,8 +81,10 @@ export class DetailComponent implements OnInit {
     }else{
       //if don't exist list cart
       let list: TempCart[] = [];
-      list.push(tempCart); 
-      localStorage.setItem('cart', list.toString());
+      list.push(tempCart);
+      let json = JSON.stringify(list);   
+      localStorage.setItem('cart', json);
+      this.router.navigate(['/cart']);
     }
   }
 

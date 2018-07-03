@@ -6,11 +6,6 @@ export const routes: Routes = [
     path: 'admin',
     loadChildren: () => AdminModule
   },
-  // {
-  //   path: '',
-  //   redirectTo: 'user',
-  //   pathMatch: 'full'
-  // }
   {
     path: '',
     loadChildren: () => DashboardModule
