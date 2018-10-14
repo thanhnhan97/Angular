@@ -18,9 +18,8 @@ export class CartComponent implements OnInit {
 
   loadListCart()
   {
-    debugger
     let list = localStorage.getItem('cart');
-    if(list)
+    if(list != '')
     {
       this.listCart$ = of(JSON.parse(list));
     }

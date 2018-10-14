@@ -76,6 +76,7 @@ export class ProductcategoriesComponent implements OnInit {
   }
 
   deleteItem(item: ProductType, index: any) {
+   try {
     this.baseService.delete(`/producttype/${item.ProductTypeID}`).subscribe(
       data => {
         if (data) {
@@ -91,6 +92,10 @@ export class ProductcategoriesComponent implements OnInit {
         }
       }
     );
+   } catch (error) {
+    this.showMessageBox('Delete Fail');
+
+   }
   }
 
   updateItem() {

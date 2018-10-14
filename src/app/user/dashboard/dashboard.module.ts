@@ -1,20 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { DetailComponent } from './detail/detail.component';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { userRoute } from '../../shared/routes/user.routing';
+import { userRoute, UserRoutingModule } from '../../shared/routes/user.routing';
 import { CartComponent } from './cart/cart.component';
 import { UserNavbarComponent } from './user-navbar/user-navbar.component';
+import { UserFooterComponent } from './user-footer/user-footer.component';
+import { BaseService } from '../../shared/base.service';
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(userRoute),
-    BrowserModule,
+    UserRoutingModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -23,7 +22,9 @@ import { UserNavbarComponent } from './user-navbar/user-navbar.component';
     HomeComponent,
     DetailComponent,
     CartComponent,
-    UserNavbarComponent
-  ]
+    UserNavbarComponent,
+    UserFooterComponent
+  ],
+  providers: [BaseService]
 })
 export class DashboardModule { }

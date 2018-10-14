@@ -53,7 +53,7 @@ export class ProductsComponent implements OnInit {
   createProductForm() {
     this.productForm = this.builder.group({
       ProductID: [],
-      ProductTypeID: [],
+      ProductTypeID: ['', Validators.required],
       Name: ['', [Validators.required]],
       Price: ['1'],
       Description: ['',[Validators.required]],
@@ -62,6 +62,7 @@ export class ProductsComponent implements OnInit {
   }
 
   addItem() {
+    debugger
     this.service.add('/product', this.productForm.value).subscribe(
         data => {
           if(data)
@@ -81,7 +82,6 @@ export class ProductsComponent implements OnInit {
   }
 
   deleteItem(item: Product, index: number) {
-    debugger
     this.service.delete(`/product/${item.ProductID}`).subscribe(
         data => {
           if(data)
@@ -98,10 +98,10 @@ export class ProductsComponent implements OnInit {
           }
         }
     );
-    
   }
 
   updateItem() {
+    debugger
     this.listProduct$.forEach(
       data => {
         let index = data.findIndex( x => x.ProductID === this.productForm.controls['ProductID'].value);

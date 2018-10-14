@@ -1,17 +1,13 @@
 import { CartComponent } from './../../user/dashboard/cart/cart.component';
-import { Routes } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from '../../user/dashboard/home/home.component';
 import { DetailComponent } from '../../user/dashboard/detail/detail.component';
+import { NgModule } from '@angular/core';
 
 export const userRoute : Routes = [
     {
-        path: 'home',
-        component: HomeComponent
-    },
-    {
         path: '',
-        redirectTo: '/home',
-        pathMatch: 'full'
+        component: HomeComponent
     },
     {
         path: 'cart',
@@ -22,3 +18,8 @@ export const userRoute : Routes = [
         component: DetailComponent
     }
 ];
+@NgModule({
+    imports: [ RouterModule.forChild(userRoute) ],
+    exports: [ RouterModule ]
+})
+export class UserRoutingModule{}

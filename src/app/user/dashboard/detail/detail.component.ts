@@ -35,12 +35,16 @@ export class DetailComponent implements OnInit {
   selectListCart()
   {
     let key = 'cart';
-    let itemsCart : Observable<TempCart[]> = of(
-      JSON.parse(
-        localStorage.getItem(key)
-      )
-    );
-    return itemsCart;
+    const list = localStorage.getItem(key);
+    if (list != '') {
+      let itemsCart= of(
+        JSON.parse(
+          localStorage.getItem(key)
+        )
+      );
+      return itemsCart;
+    }
+    return of([]);
   }
 
   addCart(item: Product, quantity: number)
@@ -60,7 +64,7 @@ export class DetailComponent implements OnInit {
     if(list == undefined) //<-- check list item cart exist
     {
       //if exist
-      list.forEach(
+      list.subscribe(
         data => {
           let index = data.findIndex(x => x.productID === item.ProductID);
           if(index < -1)
@@ -84,7 +88,7 @@ export class DetailComponent implements OnInit {
       list.push(tempCart);
       let json = JSON.stringify(list);   
       localStorage.setItem('cart', json);
-      this.router.navigate(['/cart']);
+      this.router.navigate(['/home/cart']);
     }
   }
 

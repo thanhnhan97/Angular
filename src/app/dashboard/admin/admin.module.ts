@@ -2,26 +2,27 @@ import { ProductcategoriesComponent } from './../productcategories/productcatego
 import { ProductsComponent } from './../products/products.component';
 import { NgModule } from '@angular/core';
 import { AdminComponent } from './admin.component';
-import { RouterModule } from '@angular/router';
-import { adminRoutes } from '../../shared/routes/admin.routing';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { AdminRoutingModule } from '../../shared/routes/admin.routing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { BrowserModule } from '@angular/platform-browser';
 import { NavbarAdminComponent } from '../navbar-admin/navbar-admin.component';
+import { CommonModule } from '@angular/common';
+import { BaseService } from '../../shared/base.service';
 
 @NgModule({
   imports: [
-    RouterModule.forChild(adminRoutes),
-    ReactiveFormsModule,
-    BrowserModule,
+    AdminRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    CommonModule,
+    ReactiveFormsModule
   ],
   declarations: [
     AdminComponent,
     ProductsComponent,
     ProductcategoriesComponent,
     NavbarAdminComponent
-  ]
+  ],
+  providers: [BaseService]
 })
 export class AdminModule { }
